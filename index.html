@@ -177,11 +177,9 @@
     margin: 0 0 clamp(20px, 4vw, 36px);
     overflow: hidden;
     background: #46b4ef;
-    height: clamp(280px, 60vh, 580px);
   }
   .hero-banner img {
-    display: block; width: 100%; height: 100%;
-    object-fit: cover; object-position: 50% 18%;
+    display: block; width: 100%; height: auto;
   }
   .hero-banner figcaption {
     position: absolute; left: 0; right: 0; bottom: 0;
@@ -391,29 +389,6 @@
 </style>
 
 <!-- ============================================================
-     MASTHEAD
-     ============================================================ -->
-<header class="mast">
-  <div class="wrap mast-inner">
-    <a class="brandmark" href="#top" aria-label="Home">
-      <span class="seal" id="seal">HS</span>
-      <span class="wtxt">
-        <b id="brand-name">High Spirit</b>
-        <span id="brand-sub">Bags &amp; Luggage · Manufacturer &amp; Exporter</span>
-      </span>
-    </a>
-    <div class="mast-actions">
-      <button class="btn" id="copyTop" type="button">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-        <span>Copy link</span>
-      </button>
-    </div>
-  </div>
-</header>
-
-<a id="top"></a>
-
-<!-- ============================================================
      HERO BANNER (full-width)
      ============================================================ -->
 <figure class="hero-banner">
@@ -524,9 +499,6 @@ const dlSvg  = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strok
 /* ---------------- Render ---------------- */
 function el(html){ const t = document.createElement('template'); t.innerHTML = html.trim(); return t.content.firstElementChild; }
 
-document.getElementById('brand-name').textContent = SITE.brand;
-document.getElementById('brand-sub').textContent  = SITE.subtitle;
-document.getElementById('seal').textContent       = SITE.initials;
 document.getElementById('foot-brand').textContent = SITE.legal || SITE.brand;
 document.title = SITE.brand + " — Catalogues & Contact";
 
@@ -604,5 +576,4 @@ async function copyLink(){
   }
   showToast('Link copied to clipboard');
 }
-document.getElementById('copyTop').addEventListener('click', copyLink);
 </script>
