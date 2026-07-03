@@ -1,0 +1,712 @@
+<style>
+  /* ============================================================
+     THEME TOKENS  — palette picked for an international trade house:
+     cool porcelain "document" paper, ink-blue text, maritime teal
+     accent with a restrained brass detail. Both themes defined.
+     ============================================================ */
+  :root {
+    --paper:      #EBEEF2;
+    --surface:    #FFFFFF;
+    --surface-2:  #F4F6F9;
+    --ink:        #0F1720;
+    --ink-2:      #4C5A67;
+    --ink-3:      #7C8996;
+    --line:       #DBE1E8;
+    --line-2:     #E7ECF1;
+    --teal:       #0C6B62;
+    --teal-deep:  #084F49;
+    --teal-soft:  #E4F0EE;
+    --brass:      #9A6E2B;
+    --focus:      #10897E;
+    --shadow:     0 1px 2px rgba(16,23,32,.05), 0 8px 24px -12px rgba(16,23,32,.18);
+    --shadow-lg:  0 2px 4px rgba(16,23,32,.06), 0 24px 48px -20px rgba(16,23,32,.28);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --paper:      #0B1015;
+      --surface:    #131B22;
+      --surface-2:  #0F171D;
+      --ink:        #ECF1F5;
+      --ink-2:      #9EABB6;
+      --ink-3:      #6B7883;
+      --line:       #222D36;
+      --line-2:     #1A232B;
+      --teal:       #45B9AC;
+      --teal-deep:  #2C8378;
+      --teal-soft:  #14262A;
+      --brass:      #CDA45C;
+      --focus:      #45B9AC;
+      --shadow:     0 1px 2px rgba(0,0,0,.4), 0 10px 30px -16px rgba(0,0,0,.7);
+      --shadow-lg:  0 2px 6px rgba(0,0,0,.5), 0 28px 56px -22px rgba(0,0,0,.8);
+    }
+  }
+  /* Viewer theme toggle wins over OS in both directions */
+  :root[data-theme="light"] {
+    --paper:#EBEEF2; --surface:#FFFFFF; --surface-2:#F4F6F9; --ink:#0F1720; --ink-2:#4C5A67; --ink-3:#7C8996;
+    --line:#DBE1E8; --line-2:#E7ECF1; --teal:#0C6B62; --teal-deep:#084F49; --teal-soft:#E4F0EE; --brass:#9A6E2B; --focus:#10897E;
+    --shadow:0 1px 2px rgba(16,23,32,.05), 0 8px 24px -12px rgba(16,23,32,.18);
+    --shadow-lg:0 2px 4px rgba(16,23,32,.06), 0 24px 48px -20px rgba(16,23,32,.28);
+  }
+  :root[data-theme="dark"] {
+    --paper:#0B1015; --surface:#131B22; --surface-2:#0F171D; --ink:#ECF1F5; --ink-2:#9EABB6; --ink-3:#6B7883;
+    --line:#222D36; --line-2:#1A232B; --teal:#45B9AC; --teal-deep:#2C8378; --teal-soft:#14262A; --brass:#CDA45C; --focus:#45B9AC;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 30px -16px rgba(0,0,0,.7);
+    --shadow-lg:0 2px 6px rgba(0,0,0,.5), 0 28px 56px -22px rgba(0,0,0,.8);
+  }
+
+  * { box-sizing: border-box; }
+
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-size: 17px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Faint document-grid texture on the page ground */
+  body::before {
+    content: "";
+    position: fixed; inset: 0;
+    background-image:
+      linear-gradient(to right, color-mix(in srgb, var(--ink) 4%, transparent) 1px, transparent 1px),
+      linear-gradient(to bottom, color-mix(in srgb, var(--ink) 4%, transparent) 1px, transparent 1px);
+    background-size: 44px 44px;
+    pointer-events: none;
+    opacity: .5;
+    z-index: 0;
+  }
+
+  .serif { font-family: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, "Times New Roman", serif; }
+  .mono  { font-family: ui-monospace, "Cascadia Code", "SF Mono", Menlo, Consolas, monospace; }
+
+  .wrap {
+    position: relative;
+    z-index: 1;
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: 0 clamp(18px, 4vw, 40px);
+  }
+
+  a { color: inherit; }
+
+  /* ---------- Eyebrow / labels ---------- */
+  .eyebrow {
+    font-family: ui-monospace, "Cascadia Code", "SF Mono", Menlo, Consolas, monospace;
+    font-size: .72rem;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    color: var(--brass);
+    margin: 0;
+    display: flex; align-items: center; gap: .7em;
+  }
+  .eyebrow::before {
+    content: "";
+    width: 26px; height: 1px;
+    background: var(--brass);
+    display: inline-block;
+    opacity: .8;
+  }
+
+  /* ---------- Masthead ---------- */
+  header.mast {
+    border-bottom: 1px solid var(--line);
+    background: color-mix(in srgb, var(--surface) 70%, transparent);
+    backdrop-filter: blur(8px);
+    position: sticky; top: 0; z-index: 20;
+  }
+  .mast-inner {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 16px;
+    padding: 14px 0;
+  }
+  .brandmark { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+  .brandmark .seal {
+    width: 38px; height: 38px; flex: none;
+    border: 1px solid var(--teal);
+    color: var(--teal);
+    border-radius: 50%;
+    display: grid; place-items: center;
+    font-weight: 700; font-size: .95rem;
+    letter-spacing: .02em;
+    font-family: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+  }
+  .brandmark .wtxt { line-height: 1.15; }
+  .brandmark .wtxt b {
+    display: block;
+    font-family: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+    font-size: 1.12rem; font-weight: 600; letter-spacing: .01em;
+  }
+  .brandmark .wtxt span {
+    font-size: .66rem; letter-spacing: .22em; text-transform: uppercase; color: var(--ink-3);
+    font-family: ui-monospace, Consolas, monospace;
+  }
+  .mast-actions { display: flex; align-items: center; gap: 8px; }
+
+  /* ---------- Buttons ---------- */
+  .btn {
+    appearance: none; border: 1px solid var(--line);
+    background: var(--surface);
+    color: var(--ink);
+    font: inherit; font-size: .92rem; font-weight: 500;
+    padding: .55em 1em;
+    border-radius: 10px;
+    cursor: pointer;
+    display: inline-flex; align-items: center; gap: .5em;
+    text-decoration: none;
+    transition: border-color .15s, background .15s, transform .05s, color .15s;
+    white-space: nowrap;
+  }
+  .btn:hover { border-color: var(--teal); color: var(--teal); }
+  .btn:active { transform: translateY(1px); }
+  .btn svg { width: 17px; height: 17px; }
+  .btn.primary {
+    background: var(--teal); border-color: var(--teal); color: #fff;
+  }
+  :root[data-theme="dark"] .btn.primary,
+  @media (prefers-color-scheme: dark) { }
+  .btn.primary:hover { background: var(--teal-deep); border-color: var(--teal-deep); color: #fff; }
+  .btn:focus-visible, a:focus-visible, .cat:focus-visible {
+    outline: 2px solid var(--focus); outline-offset: 2px;
+  }
+
+  /* ---------- Hero ---------- */
+  .hero { padding: clamp(48px, 8vw, 92px) 0 clamp(30px, 5vw, 52px); }
+  .hero h1 {
+    font-family: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+    font-weight: 600;
+    font-size: clamp(2.1rem, 6vw, 3.5rem);
+    line-height: 1.05;
+    letter-spacing: -.015em;
+    margin: .5em 0 0;
+    max-width: 15ch;
+    text-wrap: balance;
+  }
+  .hero p.lede {
+    margin: 1.1em 0 0;
+    font-size: clamp(1.02rem, 1.6vw, 1.18rem);
+    color: var(--ink-2);
+    max-width: 56ch;
+  }
+  .hero .meta {
+    margin-top: 26px;
+    display: flex; flex-wrap: wrap; gap: 10px 20px;
+    align-items: center;
+    font-family: ui-monospace, Consolas, monospace;
+    font-size: .78rem; letter-spacing: .04em;
+    color: var(--ink-3);
+  }
+  .hero .meta b { color: var(--ink); font-weight: 600; }
+  .hero .meta .dot { width: 4px; height: 4px; border-radius: 50%; background: var(--brass); }
+
+  /* ---------- Section frame ---------- */
+  section.band { padding: clamp(30px, 5vw, 56px) 0; }
+  .sec-head { margin-bottom: 26px; }
+  .sec-head h2 {
+    font-family: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+    font-weight: 600; font-size: clamp(1.4rem, 3vw, 1.9rem);
+    margin: .35em 0 0; letter-spacing: -.01em;
+  }
+
+  /* ---------- Catalogue grid ---------- */
+  .cat-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(268px, 1fr));
+    gap: 14px;
+  }
+  .cat {
+    position: relative;
+    display: flex; flex-direction: column;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 20px 20px 18px;
+    text-decoration: none;
+    color: inherit;
+    box-shadow: var(--shadow);
+    transition: transform .16s ease, box-shadow .16s ease, border-color .16s ease;
+    overflow: hidden;
+    min-height: 172px;
+  }
+  /* document spine detail */
+  .cat::before {
+    content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 3px;
+    background: linear-gradient(var(--teal), var(--teal-deep));
+    opacity: .0; transition: opacity .16s;
+  }
+  .cat[href]:hover { transform: translateY(-3px); box-shadow: var(--shadow-lg); border-color: color-mix(in srgb, var(--teal) 45%, var(--line)); }
+  .cat[href]:hover::before { opacity: 1; }
+  .cat .tag {
+    align-self: flex-start;
+    font-family: ui-monospace, Consolas, monospace;
+    font-size: .66rem; letter-spacing: .14em; text-transform: uppercase;
+    color: var(--teal);
+    background: var(--teal-soft);
+    padding: .35em .7em; border-radius: 6px;
+    margin-bottom: 14px;
+  }
+  .cat h3 {
+    font-family: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+    font-weight: 600; font-size: 1.16rem; line-height: 1.22;
+    margin: 0 0 6px;
+  }
+  .cat p { margin: 0; color: var(--ink-2); font-size: .92rem; line-height: 1.5; }
+  .cat .foot {
+    margin-top: auto; padding-top: 16px;
+    display: flex; align-items: center; justify-content: space-between; gap: 10px;
+  }
+  .cat .fmeta { font-family: ui-monospace, Consolas, monospace; font-size: .72rem; color: var(--ink-3); letter-spacing: .03em; }
+  .cat .go {
+    display: inline-flex; align-items: center; gap: .4em;
+    font-size: .85rem; font-weight: 600; color: var(--teal);
+  }
+  .cat .go svg { width: 15px; height: 15px; transition: transform .16s; }
+  .cat[href]:hover .go svg { transform: translateX(3px); }
+  .cat.pending { }
+  .cat.pending .go { color: var(--ink-3); font-weight: 500; }
+
+  /* ---------- About / heritage ---------- */
+  .about {
+    display: grid;
+    grid-template-columns: 1.05fr 1fr;
+    gap: clamp(24px, 4vw, 52px);
+    align-items: center;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    padding: clamp(24px, 4vw, 40px);
+    box-shadow: var(--shadow);
+  }
+  .about-lead {
+    font-family: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+    font-size: clamp(1.25rem, 2.5vw, 1.7rem);
+    line-height: 1.3;
+    margin: .45em 0 0;
+    text-wrap: balance;
+    letter-spacing: -.005em;
+  }
+  .stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px 16px; }
+  .stat { border-left: 2px solid color-mix(in srgb, var(--teal) 55%, var(--line)); padding-left: 14px; }
+  .stat b {
+    font-family: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+    font-weight: 600; font-size: clamp(1.5rem, 3vw, 2rem); color: var(--teal);
+    display: block; line-height: 1; font-variant-numeric: tabular-nums;
+  }
+  .stat span { display: block; margin-top: 7px; font-size: .76rem; color: var(--ink-2);
+    font-family: ui-monospace, Consolas, monospace; letter-spacing: .03em; }
+
+  /* ---------- Brands ---------- */
+  .brand-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 14px; }
+  .brandchip {
+    position: relative; overflow: hidden;
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: 14px; padding: 22px 22px 20px; box-shadow: var(--shadow);
+  }
+  .brandchip.flag { border-color: color-mix(in srgb, var(--teal) 42%, var(--line)); background: linear-gradient(180deg, var(--teal-soft), var(--surface) 60%); }
+  .brandchip .bname {
+    font-family: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+    font-weight: 600; font-size: 1.3rem; display: flex; align-items: center; gap: .6em; flex-wrap: wrap;
+  }
+  .brandchip .flagtag {
+    font-family: ui-monospace, Consolas, monospace; font-size: .58rem; letter-spacing: .16em; text-transform: uppercase;
+    color: #fff; background: var(--teal); padding: .35em .6em; border-radius: 5px;
+  }
+  .brandchip p { margin: .6em 0 0; color: var(--ink-2); font-size: .92rem; line-height: 1.5; }
+
+  @media (max-width: 700px) { .about { grid-template-columns: 1fr; } }
+
+  /* ---------- Connect / social ---------- */
+  .social-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+    gap: 12px;
+  }
+  .social {
+    display: flex; align-items: center; gap: 14px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 14px 16px;
+    text-decoration: none; color: inherit;
+    transition: border-color .15s, transform .1s, box-shadow .15s;
+  }
+  .social:hover { border-color: color-mix(in srgb, var(--teal) 50%, var(--line)); transform: translateY(-2px); box-shadow: var(--shadow); }
+  .social .ic {
+    width: 40px; height: 40px; flex: none;
+    border-radius: 10px;
+    display: grid; place-items: center;
+    background: var(--surface-2);
+    color: var(--ink);
+    border: 1px solid var(--line-2);
+  }
+  .social:hover .ic { color: var(--teal); border-color: color-mix(in srgb, var(--teal) 40%, var(--line)); }
+  .social .ic svg { width: 20px; height: 20px; }
+  .social .lbl { line-height: 1.25; min-width: 0; }
+  .social .lbl b { display: block; font-weight: 600; font-size: .94rem; }
+  .social .lbl span { font-size: .78rem; color: var(--ink-3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block; }
+
+  /* ---------- Share / QR band ---------- */
+  .share {
+    background:
+      radial-gradient(120% 120% at 100% 0%, color-mix(in srgb, var(--teal) 12%, var(--surface)) 0%, var(--surface) 55%);
+    border: 1px solid color-mix(in srgb, var(--teal) 22%, var(--line));
+    border-radius: 20px;
+    box-shadow: var(--shadow-lg);
+    padding: clamp(24px, 4vw, 40px);
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: clamp(22px, 4vw, 44px);
+    align-items: center;
+  }
+  .qr-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 16px;
+    box-shadow: 0 10px 30px -14px rgba(16,23,32,.4);
+    width: 208px; height: 208px;
+    display: grid; place-items: center;
+    flex: none;
+  }
+  .qr-card svg, .qr-card img { width: 100%; height: 100%; display: block; }
+  .share .txt { min-width: 0; }
+  .share h2 {
+    font-family: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+    font-weight: 600; font-size: clamp(1.5rem, 3vw, 2.05rem); margin: .3em 0 .3em; letter-spacing: -.01em;
+  }
+  .share p { margin: 0 0 20px; color: var(--ink-2); max-width: 46ch; }
+  .linkrow {
+    display: flex; align-items: stretch; gap: 8px;
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: 10px; padding: 6px 6px 6px 14px;
+    max-width: 480px; margin-bottom: 14px;
+  }
+  .linkrow input {
+    flex: 1; min-width: 0; border: none; background: transparent; color: var(--ink);
+    font-family: ui-monospace, Consolas, monospace; font-size: .82rem;
+  }
+  .linkrow input:focus { outline: none; }
+  .share-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+
+  /* ---------- Footer ---------- */
+  footer.foot {
+    border-top: 1px solid var(--line);
+    padding: 40px 0 56px;
+    margin-top: 20px;
+  }
+  .foot-inner { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 24px; align-items: flex-start; }
+  .foot .contact { display: grid; gap: 6px; }
+  .foot .contact a { text-decoration: none; color: var(--ink-2); font-size: .92rem; display: inline-flex; align-items: center; gap: .55em; }
+  .foot .contact a:hover { color: var(--teal); }
+  .foot .contact a svg { width: 15px; height: 15px; color: var(--ink-3); }
+  .foot .fine { color: var(--ink-3); font-size: .78rem; font-family: ui-monospace, Consolas, monospace; letter-spacing: .03em; max-width: 30ch; }
+
+  /* ---------- Toast ---------- */
+  .toast {
+    position: fixed; left: 50%; bottom: 28px; transform: translate(-50%, 20px);
+    background: var(--ink); color: var(--paper);
+    padding: .7em 1.2em; border-radius: 10px; font-size: .9rem; font-weight: 500;
+    box-shadow: var(--shadow-lg);
+    opacity: 0; pointer-events: none; transition: opacity .2s, transform .2s; z-index: 60;
+    display: flex; align-items: center; gap: .5em;
+  }
+  .toast.show { opacity: 1; transform: translate(-50%, 0); }
+  .toast svg { width: 16px; height: 16px; color: var(--teal); }
+
+  @media (max-width: 620px) {
+    .share { grid-template-columns: 1fr; justify-items: center; text-align: center; }
+    .share .txt { text-align: left; }
+    .eyebrow { justify-content: flex-start; }
+    .brandmark .wtxt span { display: none; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; animation: none !important; scroll-behavior: auto !important; }
+  }
+</style>
+
+<!-- ============================================================
+     MASTHEAD
+     ============================================================ -->
+<header class="mast">
+  <div class="wrap mast-inner">
+    <a class="brandmark" href="#top" aria-label="Home">
+      <span class="seal" id="seal">HS</span>
+      <span class="wtxt">
+        <b id="brand-name">High Spirit</b>
+        <span id="brand-sub">Bags &amp; Luggage · Manufacturer &amp; Exporter</span>
+      </span>
+    </a>
+    <div class="mast-actions">
+      <button class="btn" id="copyTop" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        <span>Copy link</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<a id="top"></a>
+
+<!-- ============================================================
+     HERO
+     ============================================================ -->
+<div class="wrap hero">
+  <p class="eyebrow">International Catalogue &amp; Contact Hub</p>
+  <h1 id="hero-title">Every bag, brand and channel — behind one link.</h1>
+  <p class="lede" id="hero-lede">
+    Explore our complete range across Priority Bags, Hashtag and Traworld — school,
+    college, business, travel and beyond. Built for our partners and buyers worldwide.
+  </p>
+  <div class="meta" id="hero-meta">
+    <span>Updated <b>July&nbsp;2026</b></span>
+    <span class="dot"></span>
+    <span><b id="cat-count">6</b> catalogues</span>
+    <span class="dot"></span>
+    <span>Ships <b>worldwide</b></span>
+  </div>
+</div>
+
+<!-- ============================================================
+     ABOUT / HERITAGE
+     ============================================================ -->
+<section class="band wrap" id="about">
+  <div class="about">
+    <div>
+      <p class="eyebrow">Since 1999</p>
+      <p class="about-lead" id="about-lead"></p>
+    </div>
+    <div class="stats" id="statGrid"></div>
+  </div>
+</section>
+
+<!-- ============================================================
+     BRANDS
+     ============================================================ -->
+<section class="band wrap" id="brands">
+  <div class="sec-head">
+    <p class="eyebrow">Our brands</p>
+    <h2>Three labels, one house</h2>
+  </div>
+  <div class="brand-grid" id="brandGrid"></div>
+</section>
+
+<!-- ============================================================
+     CATALOGUES
+     ============================================================ -->
+<section class="band wrap" id="catalogues">
+  <div class="sec-head">
+    <p class="eyebrow">Catalogues</p>
+    <h2>Product ranges &amp; brochures</h2>
+  </div>
+  <div class="cat-grid" id="catGrid"></div>
+</section>
+
+<!-- ============================================================
+     CONNECT
+     ============================================================ -->
+<section class="band wrap" id="connect">
+  <div class="sec-head">
+    <p class="eyebrow">Connect</p>
+    <h2>Find us on every channel</h2>
+  </div>
+  <div class="social-grid" id="socialGrid"></div>
+</section>
+
+<!-- ============================================================
+     FOOTER
+     ============================================================ -->
+<footer class="foot">
+  <div class="wrap foot-inner">
+    <div class="contact" id="contact"></div>
+    <div class="fine">
+      <div id="foot-brand">High Spirit Commercial Ventures Pvt. Ltd.</div>
+      <div style="margin-top:6px">This hub updates in place — the same link always shows the latest.</div>
+    </div>
+  </div>
+</footer>
+
+<div class="toast" id="toast" role="status" aria-live="polite">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+  <span id="toastMsg">Link copied</span>
+</div>
+
+<script>
+/* ================================================================
+   YOUR CONTENT — edit everything below. This is the whole "platform":
+   change the text and links here and the page rebuilds itself.
+
+   • catalogues[].url  →  paste the shareable file link (Google Drive /
+     Dropbox / your website). Leave "" and the card shows "Coming soon".
+   • social[].url      →  full https link (or mailto:/tel:/wa.me link).
+   ================================================================ */
+const SITE = {
+  brand:      "High Spirit",
+  legal:      "High Spirit Commercial Ventures Pvt. Ltd.",
+  initials:   "HS",                       // shown in the round seal
+  subtitle:   "Bags & Luggage · Manufacturer & Exporter",
+  heroTitle:  "Every bag, brand and channel — behind one link.",
+  heroLede:   "Explore our complete range across Priority Bags, Hashtag and Traworld — school, college, business, travel and beyond. Built for our partners and buyers worldwide.",
+  updated:    "July 2026",
+
+  about: {
+    lead: "From a father-and-son workshop in Surat in 1999 to one of India’s market leaders in bags & luggage — designed, manufactured and exported in-house.",
+    stats: [
+      { big: "1999",      cap: "Established in Surat" },
+      { big: "970+",      cap: "Machines · Bihar plants" },
+      { big: "1,440+",    cap: "Employees · 60% women" },
+      { big: "Worldwide", cap: "Manufacturer & exporter" }
+    ]
+  },
+
+  brands: [
+    { name: "Priority Bags", flagship: true, note: "Our flagship brand — affordable, dependable bags trusted across India." },
+    { name: "Hashtag",       flagship: false, note: "Youthful, trend-led backpacks and everyday styles." },
+    { name: "Traworld",      flagship: false, note: "Travel, luggage and trolley specialists for every journey." }
+  ],
+
+  /* Catalogues — paste each PDF's shareable link into url (Drive/Dropbox/website).
+     Leave "" to show a "Coming soon" card. Priority Bags leads. */
+  catalogues: [
+    { tag: "Flagship",  title: "Priority Bags — Full Catalogue", desc: "Our complete flagship collection across every bag category, with specs and MOQs.", meta: "PDF", url: "" },
+    { tag: "School",    title: "School Bags",                    desc: "Designer school bags built for daily durability.",                 meta: "PDF", url: "" },
+    { tag: "College",   title: "College Bags & Backpacks",       desc: "Everyday campus styles for students.",                             meta: "PDF", url: "" },
+    { tag: "Business",  title: "Business & Laptop Cases",        desc: "Professional laptop bags and business cases.",                     meta: "PDF", url: "" },
+    { tag: "Travel",    title: "Luggage & Trolley Bags",         desc: "Trolley cases and check-in luggage for export markets.",           meta: "PDF", url: "" },
+    { tag: "Outdoor",   title: "Travel & Trekking Backpacks",    desc: "Rucksacks for travel, trekking and the outdoors.",                 meta: "PDF", url: "" },
+    { tag: "Duffle",    title: "Duffle & Messenger Bags",        desc: "Duffles, gym bags and messenger styles.",                          meta: "PDF", url: "" },
+    { tag: "Corporate", title: "Corporate Gifting Solutions",    desc: "Custom bulk gifting for corporates, PSUs and government bodies.",   meta: "PDF", url: "" }
+  ],
+
+  /* Add your links to reveal a channel. Empty ones stay hidden. */
+  social: [
+    { icon: "whatsapp",  name: "WhatsApp",  handle: "+91 99673 06650",     url: "https://wa.me/919967306650" },
+    { icon: "mail",      name: "Email",     handle: "hscvplmybiz@gmail.com", url: "mailto:hscvplmybiz@gmail.com" },
+    { icon: "instagram", name: "Instagram", handle: "Add your link",       url: "" },
+    { icon: "facebook",  name: "Facebook",  handle: "Add your link",       url: "" },
+    { icon: "linkedin",  name: "LinkedIn",  handle: "Add your link",       url: "" },
+    { icon: "youtube",   name: "YouTube",   handle: "Add your link",       url: "" },
+    { icon: "globe",     name: "Website",   handle: "Add your link",       url: "" }
+  ],
+
+  contact: [
+    { icon: "mail",  text: "hscvplmybiz@gmail.com", url: "mailto:hscvplmybiz@gmail.com" },
+    { icon: "phone", text: "+91 99673 06650",       url: "tel:+919967306650" },
+    { icon: "pin",   text: "Universal Majestic, 1009–1010, Ghatkopar–Mankhurd Link Rd, Chembur (W), Mumbai 400043, India", url: "" }
+  ]
+};
+
+/* ---------------- Icon set (monoline, brand-neutral) ---------------- */
+const ICONS = {
+  whatsapp:  '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21l1.9-5.1A8.5 8.5 0 1 1 8.1 19L3 21z"/><path d="M9 9.5c0 3 2.5 5.5 5.5 5.5.6 0 1-.5 1-.5l-1.4-1.1-1.2.6a4 4 0 0 1-2-2l.6-1.2L9.5 9S9 9 9 9.5z"/></svg>',
+  wechat:    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4C5.1 4 2 6.6 2 9.8c0 1.8 1 3.4 2.6 4.5L4 17l2.9-1.4c.5.1 1 .2 1.6.2"/><path d="M22 14.7c0-2.7-2.6-4.9-5.9-4.9S10.2 12 10.2 14.7s2.6 4.9 5.9 4.9c.6 0 1.2-.1 1.7-.2L20.5 21l-.6-2.2c1.3-.9 2.1-2.3 2.1-4.1z"/><circle cx="7" cy="9" r=".6" fill="currentColor"/><circle cx="11" cy="9" r=".6" fill="currentColor"/><circle cx="14" cy="14" r=".5" fill="currentColor"/><circle cx="18" cy="14" r=".5" fill="currentColor"/></svg>',
+  instagram: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.3" cy="6.7" r="1" fill="currentColor" stroke="none"/></svg>',
+  facebook:  '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 8h-2.2c-.6 0-1 .5-1 1.1V11H15l-.4 2.6h-2.8V21"/><path d="M12.5 21A9 9 0 1 0 11 21"/></svg>',
+  linkedin:  '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M7 10v7"/><circle cx="7" cy="7" r=".8" fill="currentColor" stroke="none"/><path d="M11 17v-4a2 2 0 0 1 4 0v4"/><path d="M11 17v-7"/></svg>',
+  youtube:   '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="4"/><path d="M10 9l5 3-5 3z" fill="currentColor" stroke="none"/></svg>',
+  globe:     '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.5 2.5 15 0 18M12 3c-2.5 2.5-2.5 15 0 18"/></svg>',
+  mail:      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>',
+  phone:     '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3 19.5 19.5 0 0 1-6-6 19.8 19.8 0 0 1-3-8.6A2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.3 1.8.6 2.6a2 2 0 0 1-.5 2.1L8 9.6a16 16 0 0 0 6 6l1.2-1.2a2 2 0 0 1 2.1-.5c.8.3 1.7.5 2.6.6a2 2 0 0 1 1.7 2z"/></svg>',
+  pin:       '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 6-9 12-9 12s-9-6-9-12a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>'
+};
+const arrowSvg = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
+
+/* ---------------- Render ---------------- */
+function el(html){ const t = document.createElement('template'); t.innerHTML = html.trim(); return t.content.firstElementChild; }
+
+document.getElementById('brand-name').textContent = SITE.brand;
+document.getElementById('brand-sub').textContent  = SITE.subtitle;
+document.getElementById('seal').textContent       = SITE.initials;
+document.getElementById('hero-title').textContent = SITE.heroTitle;
+document.getElementById('hero-lede').textContent  = SITE.heroLede;
+document.getElementById('foot-brand').textContent = SITE.legal || SITE.brand;
+document.getElementById('cat-count').textContent  = SITE.catalogues.length;
+document.title = SITE.brand + " — Catalogues & Contact";
+
+/* About / heritage */
+if (SITE.about) {
+  document.getElementById('about-lead').textContent = SITE.about.lead;
+  const statGrid = document.getElementById('statGrid');
+  (SITE.about.stats || []).forEach(s => {
+    const st = el(`<div class="stat"><b></b><span></span></div>`);
+    st.querySelector('b').textContent = s.big;
+    st.querySelector('span').textContent = s.cap;
+    statGrid.appendChild(st);
+  });
+}
+
+/* Brands */
+const brandGrid = document.getElementById('brandGrid');
+(SITE.brands || []).forEach(b => {
+  const chip = el(`<div class="brandchip ${b.flagship ? 'flag' : ''}">
+      <div class="bname"><span class="bn"></span>${b.flagship ? '<span class="flagtag">Flagship</span>' : ''}</div>
+      <p></p>
+    </div>`);
+  chip.querySelector('.bn').textContent = b.name;
+  chip.querySelector('p').textContent = b.note;
+  brandGrid.appendChild(chip);
+});
+
+const catGrid = document.getElementById('catGrid');
+SITE.catalogues.forEach(c => {
+  const has = c.url && c.url.trim();
+  const card = el(`<a class="cat ${has ? '' : 'pending'}" ${has ? `href="${c.url}" target="_blank" rel="noopener"` : ''}>
+      <span class="tag">${c.tag}</span>
+      <h3></h3>
+      <p></p>
+      <div class="foot">
+        <span class="fmeta">${c.meta || ''}</span>
+        <span class="go">${has ? 'View' : 'Coming soon'} ${has ? arrowSvg : ''}</span>
+      </div>
+    </a>`);
+  card.querySelector('h3').textContent = c.title;
+  card.querySelector('p').textContent  = c.desc;
+  catGrid.appendChild(card);
+});
+
+const socialGrid = document.getElementById('socialGrid');
+SITE.social.forEach(s => {
+  const has = s.url && s.url.trim();
+  if (!has) return; // hide un-set channels
+  const item = el(`<a class="social" href="${s.url}" ${s.url.startsWith('http') ? 'target="_blank" rel="noopener"' : ''}>
+      <span class="ic">${ICONS[s.icon] || ICONS.globe}</span>
+      <span class="lbl"><b></b><span></span></span>
+    </a>`);
+  item.querySelector('b').textContent = s.name;
+  item.querySelector('.lbl span').textContent = s.handle;
+  socialGrid.appendChild(item);
+});
+
+const contactBox = document.getElementById('contact');
+SITE.contact.forEach(c => {
+  if (!c.text) return;
+  const a = el(`<a href="${c.url || '#'}">${ICONS[c.icon] || ''}<span></span></a>`);
+  a.querySelector('span').textContent = c.text;
+  contactBox.appendChild(a);
+});
+
+/* ---------------- Copy-link behaviour ---------------- */
+const url = window.location.href.split('#')[0];
+
+const toast = document.getElementById('toast');
+const toastMsg = document.getElementById('toastMsg');
+let toastTimer;
+function showToast(msg){
+  toastMsg.textContent = msg;
+  toast.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=> toast.classList.remove('show'), 2200);
+}
+async function copyLink(){
+  try { await navigator.clipboard.writeText(url); }
+  catch(e){
+    const i = document.getElementById('pageUrl'); i.focus(); i.select();
+    try { document.execCommand('copy'); } catch(_) {}
+  }
+  showToast('Link copied to clipboard');
+}
+document.getElementById('copyTop').addEventListener('click', copyLink);
+</script>
