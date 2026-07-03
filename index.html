@@ -4,54 +4,24 @@
      cool porcelain "document" paper, ink-blue text, maritime teal
      accent with a restrained brass detail. Both themes defined.
      ============================================================ */
+  /* Single, always-white theme (does not follow device dark mode). */
   :root {
-    --paper:      #EBEEF2;
+    color-scheme: light;
+    --paper:      #FFFFFF;
     --surface:    #FFFFFF;
-    --surface-2:  #F4F6F9;
+    --surface-2:  #F5F7F9;
     --ink:        #0F1720;
     --ink-2:      #4C5A67;
     --ink-3:      #7C8996;
-    --line:       #DBE1E8;
-    --line-2:     #E7ECF1;
+    --line:       #E3E8ED;
+    --line-2:     #EDF1F4;
     --teal:       #0C6B62;
     --teal-deep:  #084F49;
     --teal-soft:  #E4F0EE;
     --brass:      #9A6E2B;
     --focus:      #10897E;
-    --shadow:     0 1px 2px rgba(16,23,32,.05), 0 8px 24px -12px rgba(16,23,32,.18);
-    --shadow-lg:  0 2px 4px rgba(16,23,32,.06), 0 24px 48px -20px rgba(16,23,32,.28);
-  }
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --paper:      #0B1015;
-      --surface:    #131B22;
-      --surface-2:  #0F171D;
-      --ink:        #ECF1F5;
-      --ink-2:      #9EABB6;
-      --ink-3:      #6B7883;
-      --line:       #222D36;
-      --line-2:     #1A232B;
-      --teal:       #45B9AC;
-      --teal-deep:  #2C8378;
-      --teal-soft:  #14262A;
-      --brass:      #CDA45C;
-      --focus:      #45B9AC;
-      --shadow:     0 1px 2px rgba(0,0,0,.4), 0 10px 30px -16px rgba(0,0,0,.7);
-      --shadow-lg:  0 2px 6px rgba(0,0,0,.5), 0 28px 56px -22px rgba(0,0,0,.8);
-    }
-  }
-  /* Viewer theme toggle wins over OS in both directions */
-  :root[data-theme="light"] {
-    --paper:#EBEEF2; --surface:#FFFFFF; --surface-2:#F4F6F9; --ink:#0F1720; --ink-2:#4C5A67; --ink-3:#7C8996;
-    --line:#DBE1E8; --line-2:#E7ECF1; --teal:#0C6B62; --teal-deep:#084F49; --teal-soft:#E4F0EE; --brass:#9A6E2B; --focus:#10897E;
-    --shadow:0 1px 2px rgba(16,23,32,.05), 0 8px 24px -12px rgba(16,23,32,.18);
-    --shadow-lg:0 2px 4px rgba(16,23,32,.06), 0 24px 48px -20px rgba(16,23,32,.28);
-  }
-  :root[data-theme="dark"] {
-    --paper:#0B1015; --surface:#131B22; --surface-2:#0F171D; --ink:#ECF1F5; --ink-2:#9EABB6; --ink-3:#6B7883;
-    --line:#222D36; --line-2:#1A232B; --teal:#45B9AC; --teal-deep:#2C8378; --teal-soft:#14262A; --brass:#CDA45C; --focus:#45B9AC;
-    --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 30px -16px rgba(0,0,0,.7);
-    --shadow-lg:0 2px 6px rgba(0,0,0,.5), 0 28px 56px -22px rgba(0,0,0,.8);
+    --shadow:     0 1px 2px rgba(16,23,32,.05), 0 8px 24px -12px rgba(16,23,32,.14);
+    --shadow-lg:  0 2px 4px rgba(16,23,32,.06), 0 24px 48px -20px rgba(16,23,32,.22);
   }
 
   * { box-sizing: border-box; }
@@ -203,6 +173,28 @@
   .hero .meta b { color: var(--ink); font-weight: 600; }
   .hero .meta .dot { width: 4px; height: 4px; border-radius: 50%; background: var(--brass); }
 
+  /* ---------- Hero banner image ---------- */
+  .hero-banner {
+    position: relative;
+    margin: 4px 0 8px;
+    border-radius: 20px;
+    overflow: hidden;
+    border: 1px solid var(--line);
+    box-shadow: var(--shadow-lg);
+    background: #46b4ef;
+  }
+  .hero-banner img { display: block; width: 100%; height: auto; }
+  .hero-banner figcaption {
+    position: absolute; left: 0; right: 0; bottom: 0;
+    padding: clamp(20px, 5vw, 42px) clamp(20px, 5vw, 46px);
+    font-family: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+    font-weight: 600; color: #fff;
+    font-size: clamp(1.5rem, 4.4vw, 3rem); line-height: 1.08; letter-spacing: -.01em;
+    text-wrap: balance;
+    text-shadow: 0 2px 16px rgba(0,0,0,.4);
+    background: linear-gradient(to top, rgba(9,14,19,.66), rgba(9,14,19,.18) 52%, transparent);
+  }
+
   /* ---------- Section frame ---------- */
   section.band { padding: clamp(30px, 5vw, 56px) 0; }
   .sec-head { margin-bottom: 26px; }
@@ -301,6 +293,9 @@
     transition: border-color .15s, transform .1s, box-shadow .15s;
   }
   .social:hover { border-color: color-mix(in srgb, var(--teal) 50%, var(--line)); transform: translateY(-2px); box-shadow: var(--shadow); }
+  .social.soon { opacity: .6; cursor: default; }
+  .social.soon:hover { border-color: var(--line); transform: none; box-shadow: none; }
+  .social.soon .lbl span { font-style: italic; }
   .social .ic {
     width: 40px; height: 40px; flex: none;
     border-radius: 10px;
@@ -437,6 +432,16 @@
 </div>
 
 <!-- ============================================================
+     HERO BANNER
+     ============================================================ -->
+<div class="wrap">
+  <figure class="hero-banner">
+    <img src="images/hero-priority.jpg" width="1897" height="1068" alt="Two students carrying Priority backpacks">
+    <figcaption>Explore the Vibrant Collection</figcaption>
+  </figure>
+</div>
+
+<!-- ============================================================
      CATALOGUES
      ============================================================ -->
 <section class="band wrap" id="catalogues">
@@ -503,15 +508,14 @@ const SITE = {
     { tag: "Business · Laptop", title: "Business Collection 2026", desc: "Professional laptop bags and business cases.",                               meta: "PDF · 11 pp",  url: "catalogues/business-catalogue-2026.pdf" }
   ],
 
-  /* Add your links to reveal a channel. Empty ones stay hidden. */
+  /* Paste each profile URL into url to make it clickable.
+     A blank url shows the channel with a "link coming soon" note. */
   social: [
-    { icon: "whatsapp",  name: "WhatsApp",  handle: "+91 99673 06650",     url: "https://wa.me/919967306650" },
+    { icon: "whatsapp",  name: "WhatsApp",  handle: "+91 99673 06650",      url: "https://wa.me/919967306650" },
     { icon: "mail",      name: "Email",     handle: "hscvplmybiz@gmail.com", url: "mailto:hscvplmybiz@gmail.com" },
-    { icon: "instagram", name: "Instagram", handle: "Add your link",       url: "" },
-    { icon: "facebook",  name: "Facebook",  handle: "Add your link",       url: "" },
-    { icon: "linkedin",  name: "LinkedIn",  handle: "Add your link",       url: "" },
-    { icon: "youtube",   name: "YouTube",   handle: "Add your link",       url: "" },
-    { icon: "globe",     name: "Website",   handle: "Add your link",       url: "" }
+    { icon: "instagram", name: "Instagram", handle: "",                     url: "" },
+    { icon: "facebook",  name: "Facebook",  handle: "",                     url: "" },
+    { icon: "linkedin",  name: "LinkedIn",  handle: "",                     url: "" }
   ],
 
   contact: [
@@ -582,13 +586,16 @@ SITE.catalogues.forEach(c => {
 const socialGrid = document.getElementById('socialGrid');
 SITE.social.forEach(s => {
   const has = s.url && s.url.trim();
-  if (!has) return; // hide un-set channels
-  const item = el(`<a class="social" href="${s.url}" ${s.url.startsWith('http') ? 'target="_blank" rel="noopener"' : ''}>
+  const item = el(`<${has ? 'a' : 'div'} class="social ${has ? '' : 'soon'}">
       <span class="ic">${ICONS[s.icon] || ICONS.globe}</span>
       <span class="lbl"><b></b><span></span></span>
-    </a>`);
+    </${has ? 'a' : 'div'}>`);
+  if (has) {
+    item.href = s.url;
+    if (s.url.startsWith('http')) { item.target = '_blank'; item.rel = 'noopener'; }
+  }
   item.querySelector('b').textContent = s.name;
-  item.querySelector('.lbl span').textContent = s.handle;
+  item.querySelector('.lbl span').textContent = has ? s.handle : 'Link coming soon';
   socialGrid.appendChild(item);
 });
 
