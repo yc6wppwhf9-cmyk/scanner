@@ -174,7 +174,7 @@
   /* ---------- Hero banner image ---------- */
   .hero-banner {
     position: relative;
-    margin: 4px 0 8px;
+    margin: clamp(24px, 5vw, 46px) 0 8px;
     border-radius: 20px;
     overflow: hidden;
     border: 1px solid var(--line);
@@ -411,25 +411,6 @@
 <a id="top"></a>
 
 <!-- ============================================================
-     HERO
-     ============================================================ -->
-<div class="wrap hero">
-  <p class="eyebrow">International Catalogue &amp; Contact Hub</p>
-  <h1 id="hero-title">Every bag, brand and channel — behind one link.</h1>
-  <p class="lede" id="hero-lede">
-    Explore our complete range across Priority Bags, Hashtag and Traworld — school,
-    college, business, travel and beyond. Built for our partners and buyers worldwide.
-  </p>
-  <div class="meta" id="hero-meta">
-    <span>Updated <b>July&nbsp;2026</b></span>
-    <span class="dot"></span>
-    <span><b id="cat-count">4</b> catalogues</span>
-    <span class="dot"></span>
-    <span>Ships <b>worldwide</b></span>
-  </div>
-</div>
-
-<!-- ============================================================
      HERO BANNER
      ============================================================ -->
 <div class="wrap">
@@ -545,10 +526,7 @@ function el(html){ const t = document.createElement('template'); t.innerHTML = h
 document.getElementById('brand-name').textContent = SITE.brand;
 document.getElementById('brand-sub').textContent  = SITE.subtitle;
 document.getElementById('seal').textContent       = SITE.initials;
-document.getElementById('hero-title').textContent = SITE.heroTitle;
-document.getElementById('hero-lede').textContent  = SITE.heroLede;
 document.getElementById('foot-brand').textContent = SITE.legal || SITE.brand;
-document.getElementById('cat-count').textContent  = SITE.catalogues.length;
 document.title = SITE.brand + " — Catalogues & Contact";
 
 const catGrid = document.getElementById('catGrid');
